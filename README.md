@@ -377,31 +377,31 @@ kubectl cluster-info
 #### How IAM Instance Profiles Work
 
 ```
-┌───────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────┐
 │                AWS Account                         │
 │                                                    │
-│  ┌──────────────────┐    ┌─────────────────────┐  │
-│  │  IAM Role:       │    │  IAM Role:          │  │
-│  │  JenkinsEC2Role  │    │  EKS Node Role      │  │
-│  │                  │    │  (auto by eksctl)    │  │
-│  │  Policies:       │    │                     │  │
-│  │  • ECR Push/Pull │    │  Policies:          │  │
-│  │  • EKS Describe  │    │  • ECR Pull         │  │
-│  │  • STS Assume    │    │  • EC2              │  │
-│  └───────┬──────────┘    │  • CNI              │  │
-│          │               └─────────────────────┘  │
+│  ┌──────────────────┐    ┌─────────────────────┐   │
+│  │  IAM Role:       │    │  IAM Role:          │   │
+│  │  JenkinsEC2Role  │    │  EKS Node Role      │   │
+│  │                  │    │  (auto by eksctl)   │   │
+│  │  Policies:       │    │                     │   │
+│  │  • ECR Push/Pull │    │  Policies:          │   │
+│  │  • EKS Describe  │    │  • ECR Pull         │   │
+│  │  • STS Assume    │    │  • EC2              │   │
+│  └───────┬──────────┘    │  • CNI              │   │
+│          │               └─────────────────────┘   │
 │          │ attached via                            │
 │          │ Instance Profile                        │
 │          ▼                                         │
-│  ┌──────────────────┐    ┌─────────────────────┐  │
-│  │  EC2 Instance    │    │  EKS Cluster        │  │
-│  │  (Jenkins)       │───▶│  devops-platform-   │  │
-│  │                  │    │  cluster             │  │
-│  │  No AWS keys     │    │                     │  │
-│  │  stored here!    │    │  Worker nodes auto-  │  │
-│  └──────────────────┘    │  pull from ECR       │  │
-│                          └─────────────────────┘  │
-└───────────────────────────────────────────────────┘
+│  ┌──────────────────┐    ┌─────────────────────┐   │
+│  │  EC2 Instance    │    │  EKS Cluster        │   │
+│  │  (Jenkins)       │───▶│  devops-platform-  │   │
+│  │                  │    │  cluster            │   │
+│  │  No AWS keys     │    │                     │   │
+│  │  stored here!    │    │  Worker nodes auto- │   │
+│  └──────────────────┘    │  pull from ECR      │   │
+│                          └─────────────────────┘   │
+└────────────────────────────────────────────────────┘
 ```
 
 #### Step-by-Step IAM Setup
@@ -623,14 +623,14 @@ kubectl get svc frontend-service -n devops-platform -o wide
 The `Jenkinsfile` at the project root defines a **5-stage declarative pipeline**:
 
 ```
-┌───────────┐    ┌───────────┐    ┌───────────┐    ┌───────────┐    ┌───────────┐
+┌───────────┐     ┌───────────┐    ┌───────────┐     ┌───────────┐    ┌───────────┐
 │  Stage 1  │───▶│  Stage 2  │───▶│  Stage 3  │───▶│  Stage 4  │───▶│  Stage 5  │
-│ Checkout  │    │ Lint/Test │    │  Docker   │    │ Push ECR  │    │ Deploy to │
-│           │    │ (parallel)│    │Build+Tag  │    │           │    │   EKS     │
-│ git clone │    │ • Django  │    │ (parallel)│    │ ecr login │    │ kubeconfig│
-│ short SHA │    │ • ESLint  │    │ • backend │    │ docker    │    │ kubectl   │
-│           │    │ • hadolint│    │ • frontend│    │ push      │    │ apply     │
-└───────────┘    └───────────┘    └───────────┘    └───────────┘    └───────────┘
+│ Checkout  │     │ Lint/Test │    │  Docker   │     │ Push ECR  │    │ Deploy to │
+│           │     │ (parallel)│    │ Build+Tag │     │           │    │   EKS     │
+│ git clone │     │ • Django  │    │ (parallel)│     │ ecr login │    │ kubeconfig│
+│ short SHA │     │ • ESLint  │    │  backend  │     │ docker    │    │ kubectl   │
+│           │     │ • hadolint│    │  frontend │     │ push      │    │ apply     │
+└───────────┘     └───────────┘    └───────────┘     └───────────┘    └───────────┘
 ```
 
 | Stage | What It Does | Key Commands |
@@ -675,7 +675,7 @@ In Jenkins → **Manage Jenkins** → **Credentials** → **Global**, add:
 
 | ID | Type | Value |
 |----|------|-------|
-| `aws-account-id` | Secret Text | Your 12-digit AWS Account ID (e.g., `123456789012`) |
+| `aws-account-id`  | Secret Text | Your 12-digit AWS Account ID (e.g., `123456789012`) |
 
 **Create the Pipeline Job:**
 
