@@ -28,22 +28,22 @@
 
 ```
  Developer          GitHub              Jenkins             AWS ECR            AWS EKS
- ┌───────┐     ┌─────────────┐     ┌──────────────┐    ┌────────────┐    ┌──────────────┐
- │  Git  │────▶│  Repository │────▶│   Pipeline   │───▶│   Docker   │───▶│  Kubernetes  │
- │ Push  │     │  (Webhook)  │     │              │    │  Registry  │    │   Cluster    │
- └───────┘     └─────────────┘     │  1. Checkout │    └────────────┘    │              │
-                                   │  2. Lint/Test│                      │  ┌────────┐  │
-                                   │  3. Build    │                      │  │Backend │  │
-                                   │  4. Push ECR │                      │  │ (x2)   │  │
-                                   │  5. Deploy   │                      │  ├────────┤  │
-                                   └──────────────┘                      │  │Frontend│  │
-                                         │                               │  │ (x2)   │  │
-                                    IAM Instance                         │  └────────┘  │
-                                      Profile                           │      │       │
-                                   (No hardcoded                         │  LoadBalancer│
-                                     keys!)                              └──────┬───────┘
-                                                                                │
-                                                                         Public Internet
+ ┌───────┐      ┌─────────────┐      ┌──────────────┐     ┌────────────┐     ┌──────────────┐
+ │  Git  │────▶│  Repository │ ────▶│   Pipeline   │───▶│   Docker   │───▶ │  Kubernetes  │
+ │ Push  │      │  (Webhook)  │      │              │     │  Registry  │     │   Cluster    │
+ └───────┘      └─────────────┘      │  1. Checkout │     └────────────┘     │              │
+                                     │  2. Lint/Test│                        │  ┌────────┐  │
+                                     │  3. Build    │                        │  │Backend │  │
+                                     │  4. Push ECR │                        │  │ (x2)   │  │
+                                     │  5. Deploy   │                        │  ├────────┤  │
+                                     └──────────────┘                        │  │Frontend│  │
+                                            │                                │  │ (x2)   │  │
+                                       IAM Instance                          │  └────────┘  │
+                                         Profile                             │      │       │
+                                   (No hardcoded keys!)                      │  LoadBalancer│
+                                                                             └──────┬───────┘
+                                                                                    │
+                                                                              Public Internet
 ```
 
 **How it works:**

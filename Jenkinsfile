@@ -8,7 +8,7 @@ pipeline {
         ECR_REPO_FRONTEND  = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/devops-platform-frontend"
         EKS_CLUSTER_NAME   = 'devops-platform-cluster'
         K8S_NAMESPACE      = 'devops-platform'
-        IMAGE_TAG           = "${GIT_COMMIT}"
+        IMAGE_TAG          = "${GIT_COMMIT}"
     }
 
     options {
