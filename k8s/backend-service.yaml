@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  labels:
+    app: devops-platform
+    component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: devops-platform
+    component: backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

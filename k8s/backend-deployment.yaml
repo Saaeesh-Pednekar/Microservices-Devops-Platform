@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: devops-platform
+    component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-platform
+      component: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: devops-platform
+        component: backend
+    spec:
+      containers:
+        - name: backend
+          image: ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/devops-platform-backend:latest
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          env:
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secrets
+                  key: secret-key
+            - name: DJANGO_DEBUG
+              value: "False"
+            - name: APP_ENVIRONMENT
+              value: "production"
+            - name: APP_VERSION
+              value: "latest"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /api/health/
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health/
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
+      restartPolicy: Always

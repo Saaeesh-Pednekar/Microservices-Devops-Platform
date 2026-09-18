@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+*.env
+
+# Node.js
+node_modules/
+dist/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Django
+staticfiles/
+db.sqlite3
+media/
+
+# Docker
+*.tar
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
