@@ -761,28 +761,6 @@ while true; do curl -s http://<EXTERNAL-IP>/api/health/ | jq .status; sleep 1; d
 
 ---
 
-## Part 6 — Interview Talking Points
-
-Use these points to explain this project with confidence during technical interviews:
-
-### 🔐 Secure Cloud Authentication (IAM Instance Profiles)
-
-> "I configured the Jenkins EC2 instance with an **IAM Instance Profile** instead of hardcoding AWS access keys. This means the EC2 instance automatically receives temporary, rotating credentials from the AWS metadata service. It eliminates the risk of key leakage in source code or build logs, and follows the **principle of least privilege** — the policy only grants ECR push/pull and EKS describe permissions."
-
-### ♻️ Self-Healing Infrastructure
-
-> "Kubernetes provides **self-healing** through liveness probes and the restart policy. Each pod has a liveness probe that hits `/api/health/` every 20 seconds. If a pod fails to respond 5 times in a row, Kubernetes automatically kills and recreates it — no human intervention needed. I also set **resource limits** (CPU/Memory) so a single misbehaving pod can't consume all cluster resources and take down other services."
-
-### 🔄 Zero-Downtime Rolling Updates
-
-> "The deployment uses a **RollingUpdate strategy** with `maxSurge: 1` and `maxUnavailable: 0`. This means Kubernetes creates a new pod with the updated image *before* terminating an old one. Combined with **readiness probes**, traffic is never routed to a pod that hasn't passed its health check. I verified this by running a continuous `curl` loop during a deployment — zero failed requests."
-
-### 🏗️ Immutable, Traceable Deployments
-
-> "Every Docker image is tagged with the **Git commit SHA** (not `latest`), making each deployment fully traceable back to its exact source code. If a bug is introduced, I can identify the exact commit, and Kubernetes makes it trivial to **rollback** with `kubectl rollout undo`. The multi-stage Dockerfiles also follow security best practices: non-root users, minimal base images, and no build tools in the production layer."
-
----
-
 ## Cleanup
 
 **⚠️ IMPORTANT: Delete resources to avoid AWS charges.**
