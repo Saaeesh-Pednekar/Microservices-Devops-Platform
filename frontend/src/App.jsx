@@ -99,10 +99,10 @@ export default function App() {
             <div className="label">Version</div>
             <div className="value">{info.version}</div>
           </div>
-          <div className="info-card">
+          {/* <div className="info-card">
             <div className="label">Environment</div>
             <div className="value">{info.environment}</div>
-          </div>
+          </div> */}
           <div className="info-card">
             <div className="label">Status</div>
             <div className="value healthy">

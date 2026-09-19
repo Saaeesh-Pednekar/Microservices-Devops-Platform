@@ -14,11 +14,11 @@ START_TIME = time.time()
 
 # In-memory task store (no database needed for this demo)
 _tasks = [
-    {'id': 1, 'title': 'Learn Kubernetes fundamentals', 'completed': True},
-    {'id': 2, 'title': 'Set up CI/CD pipeline with Jenkins', 'completed': False},
-    {'id': 3, 'title': 'Deploy application to AWS EKS', 'completed': False},
+    # {'id': 1, 'title': 'Learn Kubernetes fundamentals', 'completed': True},
+    # {'id': 2, 'title': 'Set up CI/CD pipeline with Jenkins', 'completed': False},
+    # {'id': 3, 'title': 'Deploy application to AWS EKS', 'completed': False},
 ]
-_next_id = 4
+_next_id = 1
 
 
 def health_check(request):

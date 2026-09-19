@@ -29,7 +29,7 @@ class TaskAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertIn('tasks', data)
-        self.assertGreater(data['count'], 0)
+        self.assertEqual(data['count'], 0)
 
     def test_add_task(self):
         client = Client()

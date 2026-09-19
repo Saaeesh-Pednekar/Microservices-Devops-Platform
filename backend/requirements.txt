@@ -1,5 +1,5 @@
 Django==5.1.1
 gunicorn==23.0.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.11
 django-cors-headers==4.4.0
 whitenoise==6.7.0

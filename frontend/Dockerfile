@@ -1,6 +1,4 @@
-# ============================================================
 # Stage 1: Build — compile React app with Vite
-# ============================================================
 FROM node:20-alpine AS builder
 
 WORKDIR /build
@@ -11,9 +9,7 @@ RUN npm ci --prefer-offline
 COPY . .
 RUN npm run build
 
-# ============================================================
 # Stage 2: Production — serve with Nginx
-# ============================================================
 FROM nginx:1.27-alpine AS production
 
 # Remove default Nginx config

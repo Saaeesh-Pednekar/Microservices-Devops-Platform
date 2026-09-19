@@ -1,6 +1,4 @@
-# ============================================================
 # Stage 1: Build — install Python dependencies in a venv
-# ============================================================
 FROM python:3.12-slim AS builder
 
 WORKDIR /build
@@ -15,9 +13,7 @@ RUN python -m venv /opt/venv && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# ============================================================
 # Stage 2: Production — minimal runtime image
-# ============================================================
 FROM python:3.12-slim AS production
 
 # Security: run as non-root

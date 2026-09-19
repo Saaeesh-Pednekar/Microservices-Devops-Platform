@@ -1,0 +1,31 @@
+services:
+  backend-service:
+    container_name: backend-container
+    build:
+      context: ./backend
+    
+    ports:
+      - "8000:8000"
+    
+    networks:
+      - devops-net
+
+    environment:
+      - APP_ENVIRONMENT=local-docker
+
+  frontend-service:
+    container_name: frontend-container
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+  
+    networks:
+      - devops-net
+
+    depends_on: 
+      - backend-service
+
+networks:
+  devops-net:
+    driver: bridge
