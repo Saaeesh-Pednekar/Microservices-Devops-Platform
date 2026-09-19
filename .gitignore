@@ -34,3 +34,6 @@ media/
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+# README
+README.md
