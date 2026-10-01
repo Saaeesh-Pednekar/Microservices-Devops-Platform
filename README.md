@@ -26,33 +26,56 @@
 
 ## Architecture Overview
 
+```text
+Developer
+   │
+   │  git push
+   ▼
+GitHub Repository
+   │
+   │  webhook
+   ▼
+Jenkins CI/CD Pipeline
+   ├─ Checkout source code
+   ├─ Run Django tests + frontend lint
+   ├─ Build backend/frontend images
+   ├─ Push images to Amazon ECR
+   └─ Deploy manifests to Amazon EKS
+            │
+            ▼
+       Amazon ECR
+            │
+            ▼
+       Amazon EKS Cluster
+            │
+            ▼
+     ┌───────────────────────────────┐
+     │   nginx Ingress Controller   │
+     │   (creates public ALB)        │
+     └──────────────┬────────────────┘
+                    │
+                    ▼
+         ┌──────────────────────┐
+         │ Frontend Service     │
+         │ Type: ClusterIP      │
+         └──────────┬───────────┘
+                    │
+                    ▼
+          Frontend Nginx Proxy
+                    │
+                    │ /api/* requests
+                    ▼
+         ┌──────────────────────┐
+         │ Backend Service      │
+         │ Type: ClusterIP      │
+         └──────────┬───────────┘
+                    │
+                    ▼
+             Django REST API
+                    │
+                    ▼
+               Public Internet
 ```
- Developer          GitHub              Jenkins             AWS ECR            AWS EKS
- ┌───────┐      ┌─────────────┐      ┌──────────────┐     ┌────────────┐     ┌──────────────────────────────┐
- │  Git  │────▶│  Repository │ ────▶│   Pipeline   │───▶│   Docker   │───▶ │       Kubernetes            │
- │ Push  │      │  (Webhook)  │      │              │     │  Registry  │     │   Cluster                   │
- └───────┘      └─────────────┘      │  1. Checkout │     └────────────┘     │  ┌──────────────┐           │
-                                     │  2. Lint/Test│                        │  │  Ingress     │           │
-                                     │  3. Build    │                        │  │ nginx        │           │
-                                     │  4. Push ECR │                        │  │ Controller   │────────▶│
-                                     │  5. Deploy   │                        │  └──────┬──────┘           │
-                                     └──────────────┘                        │         │                  │
-                                            │                                │  ┌──────▼──────┐           │
-                                       IAM Instance                          │  │Frontend Svc │           │
-                                         Profile                             │  │ClusterIP    │           │
-                                   (No hardcoded keys!)                      │  └──────┬──────┘           │
-                                                                             │         │                  │
-                                                                             │  ┌──────▼──────┐           │
-                                                                             │  │Backend Svc  │           │
-                                                                             │  │ClusterIP    │           │
-                                                                             │  └─────────────┘          │
-                                                                             └──────────────────────────────┘
-                                                                                     │
-                                                                                 Public Internet
-                                                                                   (AWS ALB from nginx ingress)
-```
-
-**How it works:**
 
 1. Developer pushes code to GitHub
 2. GitHub webhook triggers Jenkins pipeline
@@ -859,7 +882,6 @@ kubectl rollout status deployment/backend -n devops-platform -w
 # You'll see zero failed requests during the update:
 while true; do curl -s -H "Host: devops-platform.example.com" http://<INGRESS-LB-DNS>/api/health/ | jq .status; sleep 1; done
 ```
-
 
 ## License
 
