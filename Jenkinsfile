@@ -3,48 +3,48 @@ pipeline {
         kubernetes {
             defaultContainer 'tools'
             yaml '''
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    app: devops-platform
-    component: jenkins-agent
-spec:
-  serviceAccountName: jenkins
-  restartPolicy: Never
-  containers:
-    - name: tools
-      image: alpine/k8s:1.31.0
-      command: [/bin/sh]
-      args: [-c, cat]
-      tty: true
-    - name: python
-      image: python:3.12-slim
-      command: [/bin/sh]
-      args: [-c, cat]
-      tty: true
-    - name: node
-      image: node:20-alpine
-      command: [/bin/sh]
-      args: [-c, cat]
-      tty: true
-    - name: hadolint
-      image: hadolint/hadolint:latest-debian
-      command: [/bin/sh]
-      args: [-c, cat]
-      tty: true
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:v1.23.2-debug
-      command: [/busybox/sh]
-      args: [-c, cat]
-      tty: true
-      volumeMounts:
-        - name: kaniko-docker-config
-          mountPath: /kaniko/.docker
-  volumes:
-    - name: kaniko-docker-config
-      emptyDir: {}
-'''
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                labels:
+                    app: devops-platform
+                    component: jenkins-agent
+                spec:
+                serviceAccountName: jenkins
+                restartPolicy: Never
+                containers:
+                    - name: tools
+                    image: alpine/k8s:1.31.0
+                    command: [/bin/sh]
+                    args: [-c, cat]
+                    tty: true
+                    - name: python
+                    image: python:3.12-slim
+                    command: [/bin/sh]
+                    args: [-c, cat]
+                    tty: true
+                    - name: node
+                    image: node:20-alpine
+                    command: [/bin/sh]
+                    args: [-c, cat]
+                    tty: true
+                    - name: hadolint
+                    image: hadolint/hadolint:latest-debian
+                    command: [/bin/sh]
+                    args: [-c, cat]
+                    tty: true
+                    - name: kaniko
+                    image: gcr.io/kaniko-project/executor:v1.23.2-debug
+                    command: [/busybox/sh]
+                    args: [-c, cat]
+                    tty: true
+                    volumeMounts:
+                        - name: kaniko-docker-config
+                        mountPath: /kaniko/.docker
+                volumes:
+                    - name: kaniko-docker-config
+                    emptyDir: {}
+                '''
             workspaceVolume emptyDirWorkspaceVolume()
         }
     }
@@ -193,9 +193,33 @@ spec:
     post {
         success {
             echo 'Pipeline completed successfully. Images deployed to EKS.'
+            emailext(
+                recipientProviders: [developers(), requestor()],
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """The Jenkins pipeline completed successfully.
+
+                        Job: ${env.JOB_NAME}
+                        Build: #${env.BUILD_NUMBER}
+                        Status: ${currentBuild.currentResult}
+                        Build URL: ${env.BUILD_URL}
+                        Image tag: ${env.IMAGE_TAG}
+                        """
+            )
         }
         failure {
             echo 'Pipeline failed. Check the stage logs for details.'
+            emailext(
+                recipientProviders: [developers(), requestor()],
+                subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """The Jenkins pipeline failed. Check the build log for details.
+
+                        Job: ${env.JOB_NAME}
+                        Build: #${env.BUILD_NUMBER}
+                        Status: ${currentBuild.currentResult}
+                        Build URL: ${env.BUILD_URL}
+                        Image tag: ${env.IMAGE_TAG}
+                        """
+            )
         }
         always {
             cleanWs()
