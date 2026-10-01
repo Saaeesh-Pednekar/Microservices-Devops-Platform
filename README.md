@@ -19,8 +19,8 @@
 6. [Part 3 — Kubernetes Manifests](#part-3--kubernetes-manifests)
 7. [Part 4 — Automated CI/CD (Jenkinsfile)](#part-4--automated-cicd-jenkinsfile)
 8. [Part 5 — Running the Full Pipeline](#part-5--running-the-full-pipeline)
-9. [Part 6 — Interview Talking Points](#part-6--interview-talking-points)
-10. [Cleanup](#cleanup)
+<!-- 9. [Part 6 — Interview Talking Points](#part-6--interview-talking-points)
+10. [Cleanup](#cleanup) -->
 
 ---
 
