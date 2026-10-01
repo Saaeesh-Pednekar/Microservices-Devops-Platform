@@ -1,0 +1,38 @@
+controller:
+  numExecutors: 0
+  serviceType: ClusterIP
+  serviceAccount:
+    create: true
+    name: jenkins
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::<AWS_ACCOUNT_ID>:role/JenkinsEcrRole
+  installPlugins:
+    - kubernetes
+    - workflow-aggregator
+    - git
+    - credentials-binding
+    - configuration-as-code
+  JCasC:
+    defaultConfig: true
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 2Gi
+  runAsUser: 1000
+  fsGroup: 1000
+  ingress:
+    enabled: false
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClass: gp3
+
+agent:
+  enabled: true
+  podTemplates: {}
+
+rbac:
+  create: true

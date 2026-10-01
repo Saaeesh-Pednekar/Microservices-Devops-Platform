@@ -6,7 +6,7 @@ metadata:
     app: devops-platform
     component: frontend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: devops-platform
     component: frontend
