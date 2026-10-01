@@ -35,8 +35,5 @@ media/
 *.tfstate
 *.tfstate.backup
 
-# README
-README.md
-
 # Q&A
 README-QA.MD
